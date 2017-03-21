@@ -252,7 +252,7 @@ var EPiServerSiteAttentionData = new function () {
         this.onContentChange.clearAllHandlers();
     }
 
-    this.onContentChange = new function () {
+    this.onContentChange = new function () {        
         this.handlers = [];
         this.add = function (func, handlerName, contentId) {
             if (handlerName == null) {
@@ -277,28 +277,15 @@ var EPiServerSiteAttentionData = new function () {
             }
         };
         this.raise = function (name, oldValue, newValue) {
-
-            for (var key in this.handlers) {
+            for (var key in this.handlers) {                
                 if (this.handlers[key].name.indexOf(name.toLowerCase() + '_') == 0) {
-                    var oldValueString = oldValue.toString();
-                    var newValueString = newValue.toString();
-                    var vt = "";
-                    for (var vtkey in SiteAttentionSelectors) {
-                        if (SiteAttentionSelectors[vtkey].contentId == name) {
-                            vt = SiteAttentionSelectors[vtkey].wrapperTag;
-                        };
+                    // todo hai.vo: do it dynamic.
+                    if (name === 'mainContentArea') {
+                        this.doFuncWithContentArea(key, name, oldValue, newValue);
                     }
-                    if (vt != "") {
-                        oldValueString = '<' + vt + '>' + oldValueString + '</' + vt + '>';
-                        newValueString = '<' + vt + '>' + newValueString + '</' + vt + '>';
+                    else {
+                        this.doFuncWithNormalContent(key, name, oldValue, newValue);
                     }
-
-                    if (EPiServerSiteAttentionData.properties[name]) {
-                        EPiServerSiteAttentionData.properties[name] = newValue.toString();
-                    }
-
-                    this.handlers[key].func(name, oldValueString, newValueString);
-
                 }
             }
         };
@@ -306,6 +293,54 @@ var EPiServerSiteAttentionData = new function () {
             this.handlers = [];
         };
 
+        // begin customize by hai.vo  
+        this.doFuncWithContentArea = function (key, name, oldValue, newValue) {
+            require(["dojo/_base/lang", "dojo/_base/xhr"], function (lang, xhr) {                
+                xhr.get({
+                    url: '/sacontentarea',
+                    load: function (rawData) {
+                        // hai.vo: this json parse only for testing and demo!!!.
+                        var saContentAreaViewModel = JSON.parse(JSON.parse(rawData));
+
+                        var divElement = document.createElement('div');
+
+                        divElement.innerHTML = saContentAreaViewModel.oldContent;
+                        var normalizedOldValue = divElement.innerText;
+
+                        divElement.innerHTML = saContentAreaViewModel.newContent;
+                        var normalizedNewValue = divElement.innerText;
+
+                        console.log('%c OldValue: ', 'background: #F0E68C; color: #FF0000');
+                        console.log('%c ' + normalizedOldValue, 'background: #F0E68C; color: #2F4F4F');
+                        console.log('%c NewValue: ', 'background: #F0E68C; color: #FF0000');
+                        console.log('%c ' + normalizedNewValue, 'background: #F0E68C; color: #2F4F4F');
+                        EPiServerSiteAttentionData.onContentChange.doFuncWithNormalContent(key, name, normalizedOldValue, normalizedNewValue);
+                    }
+                });                
+            });            
+        };
+
+        this.doFuncWithNormalContent = function (key, name, oldValue, newValue) {
+            var oldValueString = oldValue.toString();
+            var newValueString = newValue.toString();
+            var vt = "";
+            for (var vtkey in SiteAttentionSelectors) {
+                if (SiteAttentionSelectors[vtkey].contentId == name) {
+                    vt = SiteAttentionSelectors[vtkey].wrapperTag;
+                };
+            }
+            if (vt != "") {
+                oldValueString = '<' + vt + '>' + oldValueString + '</' + vt + '>';
+                newValueString = '<' + vt + '>' + newValueString + '</' + vt + '>';
+            }
+
+            if (EPiServerSiteAttentionData.properties[name]) {
+                EPiServerSiteAttentionData.properties[name] = newValue.toString();
+            }
+
+            this.handlers[key].func(name, oldValueString, newValueString);
+        };
+        // end customize by hai.vo
     };
 
     this.onPageChange = new function () {

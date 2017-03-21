@@ -326,6 +326,7 @@
     <Compile Include="Controllers\ImageFileController.cs" />
     <Compile Include="Controllers\PageControllerBase.cs" />
     <Compile Include="Controllers\PageListBlockController.cs" />
+    <Compile Include="SaCustomization\SaContentAreaController.cs" />
     <Compile Include="Controllers\PreviewController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\SearchPageController.cs" />
@@ -374,6 +375,7 @@
     <Compile Include="Models\ViewModels\PageListModel.cs" />
     <Compile Include="Models\ViewModels\PageViewModel.cs" />
     <Compile Include="Models\ViewModels\PreviewModel.cs" />
+    <Compile Include="SaCustomization\SaContentAreaViewModel.cs" />
     <Compile Include="Models\ViewModels\SearchContentModel.cs" />
     <Compile Include="Models\ViewModels\VideoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -498,6 +500,8 @@
     <Content Include="Views\ArticlePage\Index.cshtml" />
     <Content Include="module.config" />
     <Content Include="modules\_protected\SiteAttentionModule\module.config" />
+    <Content Include="SaCustomization\Views\Index.cshtml" />
+    <Content Include="SaCustomization\Views\Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

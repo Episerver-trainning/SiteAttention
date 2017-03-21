@@ -25,9 +25,8 @@ function (declare, topic, _CommandProviderMixin) {
             }
 
             this._propertyEditedHandle = model.contentModel.watch(function (name, oldValue, value) {
-                console.log(name, value);
+                console.log(name, value);                                
                 EPiServerSiteAttentionData.onContentChange.raise(name, oldValue == null ? '' : oldValue, value);
-
             });
 
             // Keep track also of widgets change becaus the model watch will not cover all changes
